@@ -1,12 +1,20 @@
-cask :v1 => 'marked' do
-  version :latest
-  sha256 :no_check
+require "language/node"
 
-  url 'http://marked2app.com/download/Marked.zip'
-  appcast 'http://abyss.designheresy.com/marked/marked.xml'
-  name 'Marked'
-  homepage 'http://marked2app.com'
-  license :commercial
+class Marked < Formula
+  desc "Markdown parser and compiler. Built for speed."
+  homepage "https://github.com/chjj/marked"
+  url "https://github.com/chjj/marked/archive/v0.3.5.tar.gz"
+  sha256 "4a9cb612dd9fa4a10f9c43e252626b568a5beead2e3fa02f7b0e4f71f8453adc"
+  head "https://github.com/chjj/marked.git"
 
-  app 'Marked 2.app'
+  depends_on "node" => :build
+
+  def install
+    system "npm", "install", *Language::Node.std_npm_install_args(libexec)
+    bin.install_symlink Dir["#{libexec}/bin/*"]
+  end
+
+  test do
+    system "marked", "-h"
+  end
 end
